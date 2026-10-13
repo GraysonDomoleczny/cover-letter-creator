@@ -4,11 +4,19 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     chrome.scripting.executeScript({
         target: {tabId: tabId},
         func: () => {
-            return document.querySelector('script[type="application/ld+json"]').textContent
+            const title = document.querySelector('[href*="/jobs/view/"]')
+            const info = document.querySelector('[id^="JobDetails_AboutTheJob_"] [data-testid="expandable-text-box"]')
+            const location = document.querySelector("#workspace > div > div.gflllu.gflllr.gfllls.gflkaw.gflkh0.gflllj.gflllk.gfllll.gflllm.gfllln.gflk0l.gflk0j.gflgy6.gflanr.gflgqm.gflk0n.gflk0p.gfllgi > div > div.gflk01.gflk00.gflgas.gflarr.gflk02.gfllgi > div > div:nth-child(2) > div > div > div > div > div.gfllid.gflanj.gflg7u.gflh8y.gflgxu.gflha6.gflhbm.gfllgi > div > div.gflanb.gfllgi > div > div.gfllid.gflanj.gflg7u.gflh8y.gflgxu.gflha6.gflhci.gfllgi > p > span:nth-child(1)")
+
+            return {
+                info: info.innerText,
+                location: location.innerText,
+                title: title.innerText
+            }
         }
     }, (results) => {
-        job = JSON.parse(results[0].result)
-        console.log(job.description)
+        const job = results[0]
+        console.log(job)
     })
 })
 
