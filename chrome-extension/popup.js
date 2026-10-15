@@ -2,7 +2,6 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     const tabId = tabs[0].id
     const url = new URL(tabs[0].url)
     const domain = url.hostname
-    console.log(domain)
 
     chrome.scripting.executeScript({
         target: {tabId: tabId},
@@ -49,6 +48,14 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     }, (results) => {
         const job = results[0].result
         console.log(job)
+
+        fetch("http://127.0.0.1:8000/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(job)
+        })
     })
 })
 
