@@ -11,7 +11,7 @@ def google_doc_access():
         "https://www.googleapis.com/auth/drive"
     ]
 
-    DOC_ID = "1C73ydJc8-j0Jy1TNFff5kTKEaz8MMw02HO5TlEi00tM"
+    DOC_ID = "1Cx6W6RZd4ImSRS8PMCuEu0dEl7-DaI5qCHaFq5zaG7c"
 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is

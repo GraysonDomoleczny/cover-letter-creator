@@ -6,90 +6,54 @@ app = FastAPI()
 
 @app.post("/")
 async def recieve_job(job: dict):
-    print(job["description"])
-    print(job["location"])
-    print(job["organization"])
-    print(job["title"])
+    service, doc_id = google_doc_access()
 
-
-service, doc_id = google_doc_access()
-
-service.documents().batchUpdate(
-    documentId=doc_id,
-    body={
-        'requests': [
-            {
-                'insertText': {
-                    'location': {
-                        'index': 250
-                    },
-                    'text': 'this is writing to a doc'
-                } 
-            }
-        ]
-    }
-).execute()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # service.documents().batchUpdate(
-    #     documentId=document_id,
-    #     body={
-    #         "requests": [
-    #             {
-    #                 "insertText": {
-    #                     "location": {"index": 1},
-    #                     "text": job["description"]
-    #                 }
-    #             }
-    #         ]
-    #     }
-    # ).execute()
-
-    # print("Document created!")
-    # print("https://docs.google.com/document/d/" + document_id + "/edit")
+    service.documents().batchUpdate(
+        documentId=doc_id,
+        body={
+            'requests': [
+                {
+                    'deleteContentRange': {
+                        'range': {
+                            'startIndex': 242,
+                            'endIndex': 256
+                        }
+                    }
+                },
+                {
+                    'insertText': {
+                        'location': {'index': 242},
+                        'text': job['title']
+                    } 
+                },
+                {
+                    'deleteContentRange': {
+                        'range': {
+                            'startIndex': 222,
+                            'endIndex': 236
+                        }
+                    }
+                },
+                {
+                    'insertText': {
+                        'location': {'index': 222},
+                        'text': job['location']
+                    } 
+                },
+                {
+                    'deleteContentRange': {
+                        'range': {
+                            'startIndex': 194,
+                            'endIndex': 206
+                        }
+                    }
+                },
+                {
+                    'insertText': {
+                        'location': {'index': 194},
+                        'text': job['organization']
+                    } 
+                },
+            ]
+        }
+    ).execute()
