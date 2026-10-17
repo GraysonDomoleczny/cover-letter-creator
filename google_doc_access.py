@@ -8,7 +8,8 @@ from googleapiclient.discovery import build
 def google_doc_access(doc_title):
     SCOPES = [
         "https://www.googleapis.com/auth/documents",
-        "https://www.googleapis.com/auth/drive"
+        "https://www.googleapis.com/auth/drive",
+        "https://www.googleapis.com/auth/spreadsheets"
     ]
 
     DOC_ID = "1Cx6W6RZd4ImSRS8PMCuEu0dEl7-DaI5qCHaFq5zaG7c"
@@ -30,8 +31,7 @@ def google_doc_access(doc_title):
         with open("token.json", "w") as token:
             token.write(creds.to_json())
 
-    service = build("docs", "v1", credentials=creds)
-
+    doc_service = build("docs", "v1", credentials=creds)
     drive_service = build("drive", "v3", credentials=creds)
 
     copied_doc = drive_service.files().copy(
@@ -40,4 +40,4 @@ def google_doc_access(doc_title):
     ).execute()
     copied_doc_id = copied_doc['id']
 
-    return service, copied_doc_id
+    return doc_service, copied_doc_id

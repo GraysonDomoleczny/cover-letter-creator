@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from google_doc_access import google_doc_access
+from google_sheet_access import google_sheet_access
+import webbrowser
+from datetime import date
 
 
 app = FastAPI()
@@ -10,10 +13,13 @@ async def recieve_job(job: dict):
     job['address'] = 'Not Found'
 
     if job['action'] == 'generateLetter':
-        service, doc_id = google_doc_access(f"{job['organization']} | {job['title']}")
+        doc_service, doc_id = google_doc_access(f"{job['organization']} - {job['title']}")
+
+        webbrowser.open(f"https://docs.google.com/document/d/{doc_id}/edit")
+
 
         # insert job title
-        service.documents().batchUpdate(
+        doc_service.documents().batchUpdate(
             documentId=doc_id,
             body={
                 'requests': [
@@ -36,7 +42,7 @@ async def recieve_job(job: dict):
         ).execute()
 
         # insert job location
-        service.documents().batchUpdate(
+        doc_service.documents().batchUpdate(
             documentId=doc_id,
             body={
                 'requests': [
@@ -60,7 +66,7 @@ async def recieve_job(job: dict):
 
         # insert job address if exists
         if job['address'] != 'Not Found':
-            service.documents().batchUpdate(
+            doc_service.documents().batchUpdate(
                 documentId=doc_id,
                 body={
                     'requests': [
@@ -84,7 +90,7 @@ async def recieve_job(job: dict):
 
         # delete job address if not exists
         else:
-            service.documents().batchUpdate(
+            doc_service.documents().batchUpdate(
                 documentId=doc_id,
                 body={
                     'requests': [
@@ -101,7 +107,7 @@ async def recieve_job(job: dict):
             ).execute()
 
         # insert job organization
-        service.documents().batchUpdate(
+        doc_service.documents().batchUpdate(
             documentId=doc_id,
             body={
                 'requests': [
@@ -122,3 +128,50 @@ async def recieve_job(job: dict):
                 ]
             }
         ).execute()
+
+        # insert todays date
+        date_today = date.today().strftime("%B %d, %Y")
+        doc_service.documents().batchUpdate(
+            documentId=doc_id,
+            body={
+                'requests': [
+                    {
+                        'deleteContentRange': {
+                            'range': {
+                                'startIndex': 177,
+                                'endIndex': 193
+                            }
+                        }
+                    },
+                    {
+                        'insertText': {
+                            'location': {'index': 177},
+                            'text': date_today
+                        } 
+                    }
+                ]
+            }
+        ).execute()
+
+
+    if job['action'] == 'logToSpreadsheet':
+        sheet_service, sheet_id = google_sheet_access()
+
+        webbrowser.open(f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit")
+        
+        
+        sheet_service.spreadsheets().values().append(
+            spreadsheetId=sheet_id,
+            range="Sheet1!A:B",
+            valueInputOption="USER_ENTERED",
+            insertDataOption="INSERT_ROWS",
+            body={
+                'values': [
+                    [
+                        job["organization"],   
+                        job["title"]
+                    ]
+                ]
+            }
+        ).execute()
+
