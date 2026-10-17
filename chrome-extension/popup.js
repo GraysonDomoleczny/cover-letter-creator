@@ -49,14 +49,26 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
         const job = results[0].result
         console.log(job)
 
-        fetch("http://127.0.0.1:8000/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(job)
+        async function sendData(data) {
+            const response = await fetch("http://127.0.0.1:8000/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            })
+            await response.json()
+        }
+
+        document.getElementById("generateLetter").addEventListener("click", () => { 
+            job["action"] = "generateLetter"
+            sendData(job)
+        })
+        
+        document.getElementById("logToSpreadsheet").addEventListener("click", () => {
+            job["action"] = "logToSpreadsheet"
+            sendData(job)
         })
     })
 })
 
-//connect to sql
+
+// connect to sql
