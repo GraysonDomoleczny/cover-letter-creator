@@ -1,7 +1,6 @@
-.venv/
 __pycache__/
-*.pyc
-.env
 credentials.json
 token.json
 .vscode
+prompt_instructions
+ollama_generation.py

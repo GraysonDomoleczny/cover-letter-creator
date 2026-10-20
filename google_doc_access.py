@@ -5,7 +5,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 
-def google_doc_access(doc_title):
+def google_doc_access():
     SCOPES = [
         "https://www.googleapis.com/auth/documents",
         "https://www.googleapis.com/auth/drive",
@@ -36,7 +36,7 @@ def google_doc_access(doc_title):
 
     copied_doc = drive_service.files().copy(
         fileId=DOC_ID, 
-        body={'name': doc_title}
+        body={'name': "Cover Letter"}
     ).execute()
     copied_doc_id = copied_doc['id']
 
