@@ -188,8 +188,6 @@ app = FastAPI()
 
 @app.post("/")
 async def recieve_job(job: dict):
-    job['address'] = 'Not Found'
-
     if job['action'] == 'generateLetter':
         doc_service, doc_id = google_doc_access()
 
