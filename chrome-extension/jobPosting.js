@@ -11,7 +11,7 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
                 const address = document.querySelector('asdasdasdasdasd')?.innerText ?? "Not Found"
                 const description = document.querySelector('[id^="JobDetails_AboutTheJob_"] [data-testid="expandable-text-box"]')?.innerText ?? "Not Found"
                 const locationInfo = document.querySelector('[data-sdui-screen]')?.innerText ?? "Not Found"
-                const location = locationInfo.split("\n\n")[2].split(/[·]/)[0].trim()
+                const location =  locationInfo.split("\n").find(line => /·\s*.*ago\s*·\s*\d+\s+people clicked apply/i.test(line))?.split("·")[0].trim() ?? "Not Found";
                 const organization = document.querySelector('[aria-label^="Company, "]')?.innerText ?? "Not Found"
                 const title = document.querySelector('[href*="/jobs/view/"]')?.innerText ?? "Not Found"
 
