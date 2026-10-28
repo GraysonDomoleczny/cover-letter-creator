@@ -4,3 +4,4 @@ token.json
 .vscode
 prompt-instructions
 ollama_generation.py
+.env

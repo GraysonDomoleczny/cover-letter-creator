@@ -6,28 +6,34 @@ chrome.runtime.onMessage.addListener((message) => {
     }
 })
 
+
 // Gets the active tab ID, and the domain of the current webpage.
-chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+chrome.tabs.query({active: true, currentWindow: true}, async (tabs) => {
     const tabId = tabs[0].id
     const domain = new URL(tabs[0].url).hostname
 
-    let file
-
     if (domain.endsWith("linkedin.com")) {
-        file = "job-sites/linkedin.js"
-    } else if (domain.endsWith("icims.com")) {
-        file = "job-sites/icims.js"
-    } else {
-        console.log("Unsupported website")
-        return
-    }
+        await chrome.scripting.executeScript({
+            target: {tabId},
+            files: ["job-sites/linkedin.js"]
+        })
 
-    // Executes script inside current tab
-    chrome.scripting.executeScript({
-        target: {tabId: tabId},
-        files: [file],
-    })
+    } else if (domain.endsWith("icims.com")) {
+        await chrome.scripting.executeScript({
+            target: { tabId },
+            files: ["job-sites/icims.js"]
+        })
+
+        const response = await fetch("http://127.0.0.1:8000/credentials")
+        const credentials = await response.json();
+
+        await chrome.tabs.sendMessage(tabId, {
+            type: "CREDENTIALS",
+            credentials: credentials
+        })
+    }
 })
+
        
 // Sends job data to the local Python backend as a POST request.
 async function sendData(data) {

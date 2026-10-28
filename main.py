@@ -4,6 +4,9 @@ from google_sheet_access import google_sheet_access
 from ollama_generation import ollama_generation
 import webbrowser
 from datetime import date
+from dotenv import load_dotenv
+import os
+from pathlib import Path
 
 
 def cover_letter_updates(job, doc_id, doc_service):
@@ -184,12 +187,22 @@ def cover_letter_updates(job, doc_id, doc_service):
     ).execute()
 
 
+load_dotenv()
 app = FastAPI()
+
+
+@app.get("/credentials")
+def get_credentials():
+    return {
+        "username": os.getenv("JOB_USERNAME"),
+        "password": os.getenv("JOB_PASSWORD")
+    }
+
 
 @app.post("/")
 async def recieve_job(job: dict):
     if job['action'] == 'generateLetter':
-        doc_service, doc_id = google_doc_access()
+        doc_service, doc_id = google_doc_access(job)
 
         webbrowser.open(f"https://docs.google.com/document/d/{doc_id}/edit")
 
@@ -198,8 +211,6 @@ async def recieve_job(job: dict):
 
     if job['action'] == 'logToSpreadsheet':
         sheet_service, sheet_id = google_sheet_access()
-
-        webbrowser.open(f"https://docs.google.com/spreadsheets/d/{sheet_id}/edit")
         
         sheet_service.spreadsheets().values().append(
             spreadsheetId=sheet_id,
