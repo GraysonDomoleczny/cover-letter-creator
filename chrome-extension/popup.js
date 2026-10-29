@@ -19,11 +19,6 @@ chrome.tabs.query({active: true, currentWindow: true}, async (tabs) => {
         })
 
     } else if (domain.endsWith("icims.com")) {
-        await chrome.scripting.executeScript({
-            target: { tabId },
-            files: ["job-sites/icims.js"]
-        })
-
         const response = await fetch("http://127.0.0.1:8000/credentials")
         const credentials = await response.json();
 
