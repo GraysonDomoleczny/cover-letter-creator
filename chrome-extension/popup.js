@@ -19,12 +19,12 @@ chrome.tabs.query({active: true, currentWindow: true}, async (tabs) => {
         })
 
     } else if (domain.endsWith("icims.com")) {
-        const response = await fetch("http://127.0.0.1:8000/credentials")
-        const credentials = await response.json();
+        const response = await fetch("http://127.0.0.1:8000/personal")
+        const personal = await response.json();
 
         await chrome.tabs.sendMessage(tabId, {
-            type: "CREDENTIALS",
-            credentials: credentials
+            type: "PERSONAL",
+            personal: personal
         })
     }
 })

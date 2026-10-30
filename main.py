@@ -191,11 +191,15 @@ load_dotenv()
 app = FastAPI()
 
 
-@app.get("/credentials")
-def get_credentials():
+@app.get("/personal")
+def get_personal():
     return {
         "username": os.getenv("JOB_USERNAME"),
-        "password": os.getenv("JOB_PASSWORD")
+        "password": os.getenv("JOB_PASSWORD"),
+        "address1": os.getenv("JOB_ADDRESS_1"),
+        "address2": os.getenv("JOB_ADDRESS_2"),
+        "city": os.getenv("JOB_CITY"),
+        "zipcode": os.getenv("JOB_ZIPCODE"),
     }
 
 
